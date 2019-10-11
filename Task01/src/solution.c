@@ -11,15 +11,15 @@ double* sequential(int n, double *a, double *b) {
     double *x = malloc(sizeof(*x) * n); 
 
     for (int k = 0; k < n - 1; k++) {
-            double pivot = a[k * n + k];
-            for (int i = k + 1; i < n; i++) {
-                double lik = a[i * n + k] / pivot;
-                for (int j = k; j < n; j++)
-                    a[i * n + j] -= lik * a[k * n + j];
-                b[i] -= lik * b[k];
-            }   
-        }
-
+        double pivot = a[k * n + k];
+        for (int i = k + 1; i < n; i++) {
+            double lik = a[i * n + k] / pivot;
+            for (int j = k; j < n; j++)
+                a[i * n + j] -= lik * a[k * n + j];
+            b[i] -= lik * b[k];
+        }   
+    }
+    
     for (int k = n - 1; k >= 0; k--) { 
         x[k] = b[k];
         for (int i = k + 1; i < n; i++) 
@@ -27,7 +27,7 @@ double* sequential(int n, double *a, double *b) {
         x[k] /= a[k * n + k]; 
     }
 
-       return x;
+    return x;
 }
 
 double* gsl(int n, double *a, double *b) {
@@ -56,26 +56,25 @@ double* parallel(int n, double *a, double *b) {
     double *x = malloc(sizeof(*x) * n); 
 
     omp_set_num_threads(omp_get_num_procs());
-    //omp_set_schedule(omp_sched_static, (int)(n / omp_get_num_procs()));
 
     for (int k = 0; k < n - 1; k++) {
-                double pivot = a[k * n + k];
-                for (int i = k + 1; i < n; i++) {
-                    double lik = a[i * n + k] / pivot;
-                    #pragma omp simd
-                    for (int j = k; j < n; j++)
-                        a[i * n + j] -= lik * a[k * n + j];
-                    b[i] -= lik * b[k];
-                }   
-            }
-
-        for (int k = n - 1; k >= 0; k--) { 
-            x[k] = b[k];
-            #pragma omp simd
-            for (int i = k + 1; i < n; i++) 
-                x[k] -= a[k * n + i] * x[i];
-            x[k] /= a[k * n + k]; 
+        double pivot = a[k * n + k];
+            for (int i = k + 1; i < n; i++) {
+                double lik = a[i * n + k] / pivot;
+                #pragma omp simd
+                for (int j = k; j < n; j++)
+                    a[i * n + j] -= lik * a[k * n + j];
+                b[i] -= lik * b[k];
+            }   
         }
 
-        return x;
+    for (int k = n - 1; k >= 0; k--) { 
+        x[k] = b[k];
+        #pragma omp simd
+        for (int i = k + 1; i < n; i++) 
+            x[k] -= a[k * n + i] * x[i];
+        x[k] /= a[k * n + k]; 
+    }
+
+    return x;
 }

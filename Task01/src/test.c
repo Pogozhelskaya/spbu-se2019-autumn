@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <malloc.h>
+#include <math.h>
 #include "test.h"
 #include "solution.h"
 
@@ -9,15 +10,16 @@ static char* test_seq_gsl(int n, double *a, double *b) {
 
     double *x1 = malloc(sizeof(*x1) * n); 
     double *x2 = malloc(sizeof(*x2) * n); 
+
     x1 = sequential(n, a, b);
     x2 = gsl(n, a, b);
-    /*for (int i = 0; i < n; i++) {
-         if (x1[i] != x2[i]) printf ("%lf %lf \n", x1[i], x2[i]);
-    }*/
 
-    for (int i = 0; i < n; i++)  {
-        mu_assert("results are different seq gsl", (x1[i] - x2[i]) < 0.0001);
-    }
+    for (int i = 0; i < n; i++)
+        mu_assert("results are different seq gsl", (fabs(x1[i] - x2[i]) < 0.0001));
+
+    free(x1);
+    free(x2);
+    
     return 0;
 }
 
@@ -25,13 +27,16 @@ static char* test_seq_par(int n, double *a, double *b) {
 
     double *x1 = malloc(sizeof(*x1) * n); 
     double *x2 = malloc(sizeof(*x2) * n); 
+
     x1 = sequential(n, a, b);
     x2 = parallel(n, a, b);
 
-    for (int i = 0; i < n; i++)  {
-        mu_assert("results are different seq par", (x1[i] - x2[i]) < 0.0001);
-        
-    }
+    for (int i = 0; i < n; i++) 
+        mu_assert("results are different seq par", (fabs(x1[i] - x2[i]) < 0.0001));
+
+    free(x1);
+    free(x2);
+
     return 0;
 }
 
