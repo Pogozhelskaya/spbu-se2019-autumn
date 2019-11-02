@@ -8,10 +8,10 @@ namespace Task04
 {
     class Program
     {
-        static async Task Main(string[] args)
+        static void Main(string[] args)
         {
             string url = Console.ReadLine();
-            await LoadAsync(url);
+            Task.Run(() => LoadAsync(url)).Wait();
         }
 
         static async Task LoadAsync(string url)
@@ -24,15 +24,15 @@ namespace Task04
             
             foreach (Match match in matches)
             {
-                var urlName = match.Groups[1] + "://" + match.Groups[2];
-                if (links.Contains(urlName)) continue;
-                links.Add(urlName);
-                subLoads.Add(SubLoadAsync(urlName));
+                var subUrl = match.Groups[1] + "://" + match.Groups[2];
+                if (links.Contains(subUrl)) continue;
+                links.Add(subUrl);
+                subLoads.Add(GetInfoAsync(subUrl));
             }
-            await Task.WhenAll(subLoads.ToArray());
+            await Task.WhenAll(subLoads);
         }
 
-        private static async Task SubLoadAsync(string url)
+        private static async Task GetInfoAsync(string url)
         {
             int size = 0;
             try
