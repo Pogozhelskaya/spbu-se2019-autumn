@@ -11,8 +11,17 @@ namespace Task04
         static void Main(string[] args)
         {
             string url = Console.ReadLine();
-            Task.Run(() => LoadAsync(url)).Wait();
+            try
+            {
+                Task.Run(() => LoadAsync(url)).Wait();
+            }
+            catch
+            {
+                throw new Exception("Invalid URL");
+            }
+            Console.ReadKey();
         }
+        
 
         static async Task LoadAsync(string url)
         {
@@ -32,7 +41,7 @@ namespace Task04
             await Task.WhenAll(subLoads);
         }
 
-        private static async Task GetInfoAsync(string url)
+        static async Task GetInfoAsync(string url)
         {
             int size = 0;
             try
