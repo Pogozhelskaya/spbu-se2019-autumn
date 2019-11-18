@@ -11,7 +11,7 @@ namespace ProducerConsumer
             var consumers = new List<Consumer<int>>();
             var producers = new List<Producer<int>>();
 
-            const int amountConsumers = 3;
+            const int amountConsumers = 6;
             const int amountProducers = 3;
 
             for (var i = 0; i < amountProducers; ++i)
@@ -32,15 +32,17 @@ namespace ProducerConsumer
 
             Console.ReadKey();
 
+            foreach (var producer in producers)
+            {
+                producer.StopRunning();
+            }
+            
             foreach (var consumer in consumers)
             {
                 consumer.StopRunning();
             }
 
-            foreach (var producer in producers)
-            {
-                producer.StopRunning();
-            }
+            Data<int>.Empty.Release(amountConsumers);
         }
     }
 }

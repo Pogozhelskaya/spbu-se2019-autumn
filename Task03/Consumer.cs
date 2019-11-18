@@ -17,6 +17,10 @@ namespace ProducerConsumer
             while (isRunning)
             {
                 Data<T>.Empty.WaitOne();
+                if (!isRunning)
+                {
+                    break;
+                }
                 Data<T>.Mutex.WaitOne();
                 Data<T>.Buffer.RemoveAt(0);
                 Console.WriteLine($"Consumer {Thread.CurrentThread.ManagedThreadId} has wrote to buffer");
