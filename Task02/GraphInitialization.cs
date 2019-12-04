@@ -31,8 +31,8 @@ namespace Task02
             while (!reader.EndOfStream)
             {
                 var edge = reader.ReadLine().Split();
-                int start = int.Parse(edge[0]) - 1;
-                int end = int.Parse(edge[1]) - 1;
+                int start = int.Parse(edge[0]);
+                int end = int.Parse(edge[1]);
                 int weight = int.Parse(edge[2]);
 
                 graph.EdgesList.Add(new Graph.Edge(start, end, weight));

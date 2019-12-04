@@ -22,7 +22,7 @@ namespace Task02
             minDist[0] = 0;
             minEdgeFrom[0] = -1;
             
-            for (var i = 0; i < graph.VerticesCount - 1; i++)
+            for (var i = 0; i < graph.VerticesCount; i++)
             {
                 var u = -1;
 
