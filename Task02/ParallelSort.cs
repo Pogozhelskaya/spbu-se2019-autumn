@@ -18,7 +18,6 @@ namespace Task02
         {
             int pivot = Random.Next(left, right);
             T pivotValue = array[pivot];
-
             Swap(ref array[right - 1], ref array[pivot]);
             int newPivot = left;
 
@@ -34,6 +33,7 @@ namespace Task02
             Swap(ref array[right - 1], ref array[newPivot]);
             return newPivot;
         }
+        
         private static void QSort<T>(T[] array, int left, int right) where T : IComparable<T>
         {
             if (left >= right) return;
