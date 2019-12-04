@@ -1,14 +1,13 @@
-
 using System.IO;
 
 namespace Task02
 {
     public static class Kruskal
     {
-        internal class Dsu
+        private class Dsu
         {
-            public readonly int[] Parent;
-            public readonly int[] Rank;
+            internal readonly int[] Parent;
+            internal readonly int[] Rank;
 
             public Dsu(int verticesCount)
             {
@@ -22,20 +21,20 @@ namespace Task02
                 }
             }
 
-            internal int Find(Dsu dsu, int i)
+            internal int Find(int i)
             {
-                if (i == dsu.Parent[i])
+                if (i == Parent[i])
                 {
                     return i;
                 }
-                dsu.Parent[i] = Find(dsu ,dsu.Parent[i]);
+                Parent[i] = Find(Parent[i]);
                 return Parent[i];
             }
 
-            internal void Union(Dsu dsu, int i, int j)
+            internal void Union(int i, int j)
             {
-                i = Find(dsu, i);
-                j = Find(dsu, j);
+                i = Find(i);
+                j = Find(j);
 
                 if (i == j)
                 {
@@ -75,18 +74,19 @@ namespace Task02
             {
                 Graph.Edge nextEdge = edges[i++];
 
-                int x = dsu.Find(dsu, nextEdge.End);
-                int y = dsu.Find(dsu, nextEdge.Start);
+                int x = dsu.Find(nextEdge.End);
+                int y = dsu.Find(nextEdge.Start);
 
                 if (x != y)
                 {
                     edges[cnt++] = nextEdge;
-                    dsu.Union(dsu, x, y);
+                    dsu.Union( x, y);
                     weight += nextEdge.Weight;
                 }
             }
             return weight;
         }
+        
         public static void PrintKruskal(this Graph graph)
         {
             using var writer = new StreamWriter("Kruskal.txt");
