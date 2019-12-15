@@ -8,19 +8,6 @@ namespace Task05
         
         private readonly Mutex _mutex = new Mutex();
         
-        private bool Validate(BinaryTreeNode? node, int? key)
-        {
-            while (node != null)
-            {
-                if (node.Key == key)
-                {
-                    return true;
-                }
-                node = node.Key < key ? node.Right : node.Left;
-            }
-            return false;
-        }
-        
         public bool Find(int key)
         {
             return FindNode(Root, key);
@@ -32,20 +19,10 @@ namespace Task05
             {
                 if (node.Key == key)
                 {
-                    node.NodeMutex.WaitOne();
-                    if (Validate(Root, key))
-                    {
-                        node.NodeMutex.ReleaseMutex();
-                        return true;
-                    }
+                    return true;
+                }
 
-                    node.NodeMutex.ReleaseMutex();
-                    Find(key);
-                }
-                else
-                {
-                    node = node.Key < key ? node.Right : node.Left;   
-                }
+                node = node.Key < key ? node.Right : node.Left;
             }
             return false;
         }
@@ -64,13 +41,12 @@ namespace Task05
                 {
                     Root = node;
                     _mutex.ReleaseMutex();
+                    return;
                 }
-                else
-                {
-                    _mutex.ReleaseMutex();
-                    InsertNode(node);
-                }
+                _mutex.ReleaseMutex();
+                InsertNode(node);
             }
+            
             BinaryTreeNode currentNode = Root;
 
             while (currentNode != null)

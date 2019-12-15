@@ -51,6 +51,13 @@ namespace TestProject1
                 _addList.Add(value);
                 _findList.Add(value);
             }
+
+            for (var i = 100; i < 200; i++)
+            {
+                var random= new Random();
+                var value = random.Next(1001, 2000);
+                _findList.Add(value);  
+            }
         }
 
         [Test]
@@ -76,7 +83,6 @@ namespace TestProject1
                 Assert.True(tree.Find(value));
             }
             
-            Assert.Pass();
             Assert.True(CheckStructure(tree.Root));
         }
         
@@ -103,7 +109,6 @@ namespace TestProject1
                 Assert.True(tree.Find(value));
             }
             
-            Assert.Pass();
             Assert.True(CheckStructure(tree.Root));
         }
     }
