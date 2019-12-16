@@ -4,32 +4,29 @@ namespace Task05
 {
     public class OptimisticGrainedBinaryTree
     {
-        public BinaryTreeNode Root;
-        
         private readonly Mutex _mutex = new Mutex();
-        
+        public BinaryTreeNode Root;
+
         public bool Find(int key)
         {
             return FindNode(Root, key);
         }
-
+        
+        public void Insert(int key)
+        {
+            InsertNode(new BinaryTreeNode(key));
+        }
+        
         private bool FindNode(BinaryTreeNode? node, int key)
         {
             while (node != null)
             {
-                if (node.Key == key)
-                {
-                    return true;
-                }
+                if (node.Key == key) return true;
 
                 node = node.Key < key ? node.Right : node.Left;
             }
-            return false;
-        }
 
-        public void Insert(int key)
-        {
-            InsertNode(new BinaryTreeNode(key));
+            return false;
         }
 
         private void InsertNode(BinaryTreeNode node)
@@ -43,19 +40,17 @@ namespace Task05
                     _mutex.ReleaseMutex();
                     return;
                 }
+
                 _mutex.ReleaseMutex();
                 InsertNode(node);
             }
-            
-            BinaryTreeNode currentNode = Root;
+
+            var currentNode = Root;
 
             while (currentNode != null)
             {
-                if (currentNode.Key == node.Key)
-                {
-                    break;
-                }
-                
+                if (currentNode.Key == node.Key) break;
+
                 if (node.Key > currentNode.Key)
                 {
                     if (currentNode.Right == null)
@@ -68,18 +63,19 @@ namespace Task05
                             currentNode.NodeMutex.ReleaseMutex();
                             break;
                         }
+
                         currentNode.NodeMutex.ReleaseMutex();
                         InsertNode(node);
                     }
                     else
                     {
-                        currentNode = currentNode.Right;   
+                        currentNode = currentNode.Right;
                     }
                 }
                 else if (node.Key < currentNode.Key)
-                { 
+                {
                     if (currentNode.Left == null)
-                    { 
+                    {
                         currentNode.NodeMutex.WaitOne();
                         if (currentNode.Left == null)
                         {
@@ -88,6 +84,7 @@ namespace Task05
                             currentNode.NodeMutex.ReleaseMutex();
                             break;
                         }
+
                         currentNode.NodeMutex.ReleaseMutex();
                         InsertNode(node);
                     }
@@ -96,7 +93,7 @@ namespace Task05
                         currentNode = currentNode.Left;
                     }
                 }
-            } 
+            }
         }
     }
 }

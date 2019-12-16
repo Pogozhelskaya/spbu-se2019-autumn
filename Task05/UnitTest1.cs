@@ -11,35 +11,6 @@ namespace TestProject1
     
         private readonly List<int> _addList = new List<int>();
         private readonly List<int> _findList = new List<int>();
-
-        private bool CheckStructure(BinaryTreeNode node)
-        {
-            if (node == null)
-            {
-                return true;
-            }
-
-            var checkLeft = CheckStructure(node.Left);
-            var checkRight = CheckStructure(node.Right);
-            
-            if (node.Left == null && node.Right== null)
-            {
-                return true;
-            }
-
-            if (node.Left == null || node.Right == null)
-            {
-                if (node.Left == null)
-                {
-                    return (node.Key < node.Right?.Key) && checkRight;
-                }
-
-                return (node.Key > node.Left?.Key) && checkLeft;
-            }
-
-            return (node.Left?.Key < node.Key && node.Key < node.Right?.Key) &&
-                   checkLeft && checkRight;
-        }
         
         [SetUp]
         public void Setup()
@@ -110,6 +81,35 @@ namespace TestProject1
             }
             
             Assert.True(CheckStructure(tree.Root));
+        }
+        
+        private bool CheckStructure(BinaryTreeNode node)
+        {
+            if (node == null)
+            {
+                return true;
+            }
+
+            var checkLeft = CheckStructure(node.Left);
+            var checkRight = CheckStructure(node.Right);
+            
+            if (node.Left == null && node.Right== null)
+            {
+                return true;
+            }
+
+            if (node.Left == null || node.Right == null)
+            {
+                if (node.Left == null)
+                {
+                    return (node.Key < node.Right?.Key) && checkRight;
+                }
+
+                return (node.Key > node.Left?.Key) && checkLeft;
+            }
+
+            return (node.Left?.Key < node.Key && node.Key < node.Right?.Key) &&
+                   checkLeft && checkRight;
         }
     }
 }

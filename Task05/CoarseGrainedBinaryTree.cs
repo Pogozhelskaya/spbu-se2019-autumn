@@ -14,6 +14,13 @@ namespace Task05
             return result;
         }
 
+        public void Insert(int key)
+        {
+            _mutex.WaitOne();
+            InsertNode(new BinaryTreeNode(key));
+            _mutex.ReleaseMutex();
+        }
+        
         private BinaryTreeNode FindNode(BinaryTreeNode node, int key)
         {
             while (true)
@@ -26,19 +33,12 @@ namespace Task05
                 node = node.Key > key ? node.Left : node.Right;
             }
         }
-
-        public void Insert(int key)
-        {
-            _mutex.WaitOne();
-            InsertNode(new BinaryTreeNode(key));
-        }
-
+        
         private void InsertNode(BinaryTreeNode node)
         {
             if (Root == null)
             {
                 Root = node;
-                _mutex.ReleaseMutex();
             }
             else if (FindNode(Root, node.Key) == null)
             {
@@ -52,7 +52,7 @@ namespace Task05
                         {
                             node.Parent = currentNode;
                             currentNode.Right = node;
-                            _mutex.ReleaseMutex();
+                            
                             break;
                         }
 
@@ -64,17 +64,12 @@ namespace Task05
                         {
                             node.Parent = currentNode;
                             currentNode.Left = node;
-                            _mutex.ReleaseMutex();
                             break;
                         }
 
                         currentNode = currentNode.Left;
                     }
                 }
-            }
-            else
-            {
-                _mutex.ReleaseMutex();
             }
         }
         
