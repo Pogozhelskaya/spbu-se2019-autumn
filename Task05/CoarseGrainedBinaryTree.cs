@@ -8,17 +8,30 @@ namespace Task05
         private readonly Mutex _mutex = new Mutex();
         public bool Find(int key)
         {
-            _mutex.WaitOne();
-            var result = FindNode(Root, key) != null;
-            _mutex.ReleaseMutex();
+            bool result;
+            try
+            {
+                _mutex.WaitOne();
+                result = FindNode(Root, key) != null;
+            }
+            finally
+            {
+                _mutex.ReleaseMutex();
+            }
             return result;
         }
 
         public void Insert(int key)
         {
-            _mutex.WaitOne();
-            InsertNode(new BinaryTreeNode(key));
-            _mutex.ReleaseMutex();
+            try
+            {
+                _mutex.WaitOne();
+                InsertNode(new BinaryTreeNode(key));
+            }
+            finally
+            {
+                _mutex.ReleaseMutex();
+            }
         }
         
         private BinaryTreeNode FindNode(BinaryTreeNode node, int key)
